@@ -1526,7 +1526,7 @@ function decodeNewFrame(px,IW,IH,dbg){
     for(let ox=-cellS*0.35;ox<=cellS*0.35;ox+=cellS*0.12)for(let oy=-cellS*0.35;oy<=cellS*0.35;oy+=cellS*0.12){
       const gl=sampleAt(-1,cellS,ox,oy);let bs=0;
       for(const m of ['oct','quad','half']){const t=decodeSector(gl,n,m,0);if(t!==null){const chk=fillChannel(t,n,m,null);const a=agree(gl,chk.g);if(a>bs)bs=a;}}
-      if(bs>bestPh.sc)bestPh={sc:bs,cell:cellS,ox,oy};}&&&}
+      if(bs>bestPh.sc)bestPh={sc:bs,cell:cellS,ox,oy};}}
   const cell=bestPh.cell, PX=bestPh.ox, PY=bestPh.oy;
   const sample=(ci)=>sampleAt(ci,cell,PX,PY);
   const cl=sample(-1),cr=sample(0),cg=sample(1),cb=sample(2);
@@ -1643,7 +1643,7 @@ function findURL(t){
   if(!m)return null;
   let u=m[0];
   if(!/^https?:\/\//i.test(u))u='https://'+u;
-  try{new URL(u);return u}catch(e){return null}]}
+  try{new URL(u);return u}catch(e){return null}}
 function showResult(msg,text){
   const url=findURL(text);
   let html='<span class="g">'+msg+'</span>';
@@ -1687,7 +1687,7 @@ function openMenu(){
   }else{
     m.innerHTML=`<div class="menu-t">Джерело</div>
       <div class="row"><button class="b gold" id="src-gal">🖼 Обрати файл</button></div>`;
-    $('src-gal').onclick=()=>{closeMenu();$('file').click()};}]}
+    $('src-gal').onclick=()=>{closeMenu();$('file').click()};}}
 $('mainbtn').onclick=e=>{e.stopPropagation();if(busy)return;menuOpen?closeMenu():openMenu()};
 document.addEventListener('click',e=>{
   if(menuOpen&&!e.target.closest('.action'))closeMenu();
@@ -1774,7 +1774,7 @@ const SYMS={
   '₿':{name:'крипта й гроші',list:[...'₿ΞŁ$€£¥₽¢₹₩₪₴₺₮₦₱₡₫💰💵💴💶💷🪙💸💳']},
   'ᚠ':{name:'руни',list:[...'ᚠᚢᚦᚨᚱᚲᚷᚹᚺᚾᛁᛃᛇᛈᛉᛊᛏᛒᛖᛗᛚᛜᛞᛟᚪᚫᚬᛘᛦᛨ']},
   '福':{name:'ієрогліфи',list:[...'福愛龍虎鳳凰道德仁義禮智信和平安康壽喜財富貴春夏秋冬日月山水火風雷電花鳥魚']},
-  '☩':{name:'обереги',list:[...'☩⚕☯♁✠☥⚚☫☬〄卐☫☬〄卐꙰ᛝᛞ☘♧⚜⁂❋⚛☸♆⊕✶✷✸']},
+  '☩':{name:'обереги',list:[...'☩⚕☯♁✠☥⚚☫☬〄卐꙰ᛝᛞ☘♧⚜⁂❋⚛☸♆⊕✶✷✸']},
   '🃏':{name:'таро',list:[...'🃏🂠🂡🂢🂣🂤🂥🂦🂧🂨🂩🂪🂫🂭🂮🃁🃂🃃🃄🃅🃆🃇🃈🃉🃊🃋🃍🃎']},
   '🌸':{name:'природа',list:[...'🌸🌼🌻🌺🌷🌹🥀💐🌵🌲🌳🌴🌱🍀🍁🍂🍃🌾🌿☘🍄🌰⭐🌟✨⚡☄🔥💧🌊❄☃⛄🌈☀🌙']},
   '🎵':{name:'різне',list:[...'🎵🎶🎼🎹🎸🎺🎻🥁♟♜♞♝♛♚⚀⚁⚂⚃⚄⚅🀄🎲🎯🎰🎴⚽⚾🏀🏐🏈']}
