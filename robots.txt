@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://astra31415926.github.io/Life_10/sitemap.xml

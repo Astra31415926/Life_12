@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ChronoScript · taina</title>
+<meta name="description" content="ChronoScript — показує, як сучасне ім'я могло б виглядати уставним письмом XI століття, та перетворює його на читабельний орнамент. Художня реконструкція.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600&family=PT+Serif:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0f0b06;--panel:#1a130a;--panel2:#241a0e;
+  --acc:#c9a267;--acc-hot:#e6c584;--acc-dim:#8a6d42;
+  --parchment:#efe4cf;--muted:#9d876a;--line:rgba(201,162,103,.22);
+  --ok:#8fbf6a;--ustav:#e8d4a8;
+  --mono:'JetBrains Mono',monospace;--sans:'Inter',system-ui,sans-serif;--serif:'PT Serif',Georgia,serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--ink);color:var(--parchment);font-family:var(--sans);line-height:1.5;
+  background-image:radial-gradient(ellipse 70% 50% at 50% -8%,rgba(201,162,103,.1),transparent);
+  display:flex;flex-direction:column;min-height:100vh}
+button{font-family:inherit}
+button:focus-visible,input:focus-visible{outline:2px solid var(--acc-hot);outline-offset:2px}
+.hide{display:none!important}
+
+header{border-bottom:1px solid var(--line);background:rgba(15,11,6,.9);backdrop-filter:blur(10px);
+  position:sticky;top:0;z-index:60}
+.nav{display:flex;align-items:center;gap:12px;height:56px;max-width:1660px;margin:0 auto;padding:0 22px}
+.mark{font-family:var(--mono);font-weight:700;font-size:18px;letter-spacing:.07em;display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--parchment)}
+.mark::after{content:'';width:7px;height:7px;background:var(--acc)}
+.roomtabs{display:flex;gap:6px;margin-left:8px}
+.roomnav{display:flex;gap:6px;margin-left:6px}
+.nb{width:38px;height:38px;border-radius:9px;border:1px solid var(--line);background:transparent;
+  color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.15s}
+.nb:hover{color:var(--acc-hot);border-color:var(--acc-dim)}
+.theme-bar{display:flex;align-items:center;gap:10px;padding:10px 22px;border-top:1px solid var(--line);
+  max-width:1660px;margin:0 auto;width:100%}
+.tb-lbl{font-family:var(--mono);font-size:10px;letter-spacing:.15em;color:var(--acc-dim);text-transform:uppercase}
+.tb-mode{font-family:var(--mono);font-size:11px;font-weight:600;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer;transition:.15s}
+.tb-mode:hover{border-color:var(--acc-dim);color:var(--acc-hot)}
+.tb-mode.on{background:rgba(201,162,103,.16);border-color:var(--acc);color:var(--acc-hot)}
+.tb-sep{width:1px;height:20px;background:var(--line);margin:0 4px}
+.theme-pick{display:flex;gap:6px;align-items:center}
+.theme-pick button{width:22px;height:22px;border-radius:50%;border:2px solid transparent;cursor:pointer;padding:0;transition:.15s}
+.theme-pick button:hover{transform:scale(1.15)}
+.theme-pick button.on{border-color:var(--parchment);box-shadow:0 0 8px rgba(255,255,255,.3)}
+body.light-mode{--ink:#f0e8da;--panel:#e6dcc9;--panel2:#ddd0b8;--parchment:#2a2018;
+  --muted:#6a5a44;--line:rgba(120,95,60,.28);--ustav:#3a2a1a}
+.roomtab{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--muted);padding:8px 13px;
+  border:1px solid var(--line);border-radius:8px;text-transform:uppercase;transition:.15s;text-decoration:none}
+.roomtab:hover{color:var(--acc-hot);border-color:var(--acc-dim)}
+.roomtab.on{color:var(--acc-hot);border-color:rgba(201,162,103,.5);background:rgba(201,162,103,.12)}
+.navright{margin-left:auto;display:flex;gap:10px;align-items:center}
+.theme-pick{display:flex;gap:5px;align-items:center}
+.theme-pick button{width:20px;height:20px;border-radius:50%;border:2px solid transparent;cursor:pointer;
+  padding:0;transition:.15s}
+.theme-pick button:hover{transform:scale(1.15)}
+.theme-pick button.on{border-color:var(--parchment);box-shadow:0 0 8px rgba(255,255,255,.3)}
+.navlink{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--muted);padding:8px 13px;
+  border:1px solid var(--line);border-radius:8px;text-transform:uppercase;transition:.15s;text-decoration:none}
+.navlink:hover{color:var(--acc-hot);border-color:var(--acc-dim)}
+
+.app{flex:1 1 auto;display:grid;grid-template-columns:340px minmax(0,1fr) 350px;max-width:1660px;width:100%;margin:0 auto}
+.side{padding:24px 26px;display:flex;flex-direction:column;gap:18px;overflow-y:auto}
+.side.left{border-right:1px solid var(--line)}
+.side.right{border-left:1px solid var(--line)}
+.center{display:flex;flex-direction:column;align-items:center;padding:22px 24px 26px;gap:16px;min-width:0}
+
+.sec-t{font-family:var(--mono);font-size:11.5px;letter-spacing:.2em;color:var(--acc-dim);
+  text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.sec-t::before{content:'';width:5px;height:5px;background:var(--acc);flex:0 0 auto}
+.grp{display:flex;flex-direction:column;gap:10px}
+.desc{font-size:13.5px;color:var(--muted);line-height:1.62}
+.desc b{color:var(--parchment);font-weight:600}
+
+/* дві зони тексту */
+.txtzone{width:100%;max-width:600px;display:flex;flex-direction:column;gap:12px}
+.field-lbl{font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;color:var(--acc-dim);
+  text-transform:uppercase;margin-bottom:7px;display:flex;align-items:center;gap:7px}
+.field-lbl::before{content:'';width:4px;height:4px;background:var(--acc)}
+#nameInput{width:100%;background:var(--panel);border:1px solid var(--line);border-radius:13px;
+  color:var(--parchment);font-family:var(--serif);font-size:22px;padding:15px 18px;outline:none;
+  text-align:center;letter-spacing:.02em;transition:.2s}
+#nameInput:focus{border-color:var(--acc);box-shadow:0 0 24px rgba(201,162,103,.16)}
+#nameInput::placeholder{color:var(--acc-dim);font-style:italic}
+.ustav-out{width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:13px;
+  padding:18px;min-height:74px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.ustav-out::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at center,rgba(201,162,103,.06),transparent 70%);pointer-events:none}
+.ustav-text{font-family:var(--serif);font-size:clamp(24px,4.5vw,38px);font-weight:700;
+  color:var(--ustav);letter-spacing:.05em;text-align:center;line-height:1.25;
+  text-shadow:0 2px 12px rgba(232,212,168,.15)}
+.ustav-text .ch{opacity:0;display:inline-block;transform:translateY(6px);animation:inkflow .5s ease forwards}
+@keyframes inkflow{to{opacity:1;transform:translateY(0)}}
+
+.stage{width:100%;max-width:min(46vh,400px);aspect-ratio:1;background:#0a0704;
+  border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 16px 46px rgba(0,0,0,.5);flex:0 0 auto}
+.stage canvas{width:100%;height:100%;image-rendering:pixelated;display:block}
+.actions{display:flex;gap:9px;flex-wrap:wrap;justify-content:center}
+.b{font-family:var(--mono);font-size:12.5px;font-weight:600;padding:12px 18px;border-radius:11px;
+  border:1px solid var(--line);cursor:pointer;background:transparent;color:var(--muted);transition:.15s}
+.b:hover{color:var(--acc-hot);border-color:var(--acc-dim)}
+.b.gold{background:linear-gradient(160deg,rgba(201,162,103,.26),rgba(201,162,103,.1));
+  border-color:rgba(201,162,103,.5);color:var(--acc-hot)}
+
+/* розбір букв — ліва панель */
+.breakdown{display:flex;flex-direction:column;gap:7px}
+.bch{font-family:var(--mono);font-size:11px;color:var(--muted);border:1px solid var(--line);
+  border-radius:8px;padding:8px 10px;background:var(--panel);line-height:1.4}
+.bch b{color:var(--ustav);font-family:var(--serif);font-size:17px;margin-right:7px}
+
+/* панель знаків — права */
+.symtabs{display:flex;gap:6px;flex-wrap:wrap}
+.symtab{font-family:var(--serif);font-size:18px;padding:7px 12px;border:1px solid var(--line);border-radius:8px;
+  background:transparent;cursor:pointer;color:var(--ustav);transition:.15s;line-height:1}
+.symtab.on{background:rgba(201,162,103,.16);border-color:rgba(201,162,103,.42)}
+.symtab:hover:not(.on){border-color:var(--acc-dim)}
+.symgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-height:360px;overflow-y:auto;padding-right:5px}
+.symgrid button{padding:12px 4px;font-size:26px;line-height:1;border:1px solid var(--line);
+  border-radius:9px;background:transparent;cursor:pointer;color:var(--ustav);transition:.12s;font-family:var(--serif)}
+.symgrid button:hover{border-color:var(--acc);background:rgba(201,162,103,.1);transform:scale(1.08)}
+.sym-info{font-family:var(--mono);font-size:11px;color:var(--acc);letter-spacing:.03em;padding:6px 2px;border-bottom:1px solid var(--line);margin-bottom:4px}
+.sym-note{font-family:var(--mono);font-size:10px;color:var(--acc-dim);line-height:1.55;margin-top:4px}
+
+.disclaimer{font-family:var(--mono);font-size:11px;color:var(--acc-dim);line-height:1.6;
+  border-top:1px solid var(--line);padding-top:14px}
+.disclaimer b{color:var(--muted)}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--panel2);border:1px solid var(--acc-dim);border-radius:11px;padding:12px 20px;
+  font-family:var(--mono);font-size:13px;color:var(--acc-hot);opacity:0;pointer-events:none;transition:.3s;z-index:100}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media(max-width:1060px){
+  .app{grid-template-columns:1fr;max-width:600px}
+  .side{border:0!important;border-top:1px solid var(--line)!important;order:3}
+  .side.left{order:2}.center{order:1}.side.right{order:3}
+  .stage{max-width:min(72vw,360px)}
+}
+</style>
+</head>
+<body>
+
+<header><div class="nav">
+  <a href="index.html" class="mark">taina</a>
+  <div class="roomnav">
+    <a href="index.html" class="roomtab">лабораторія байткоду</a>
+    <span class="roomtab on">ChronoScript</span>
+    <a href="gallery.html" class="roomtab">Галерея</a>
+  </div>
+  <div class="navright">
+    <button class="nb" id="themeBtn" title="Оформлення"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:19px;height:19px"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
+  </div>
+</div>
+<div class="theme-bar hide" id="themeBar">
+  <span class="tb-lbl">Тема</span>
+  <button class="tb-mode on" id="modeDark">Темна</button>
+  <button class="tb-mode" id="modeLight">Світла</button>
+  <span class="tb-sep"></span>
+  <span class="tb-lbl">Колір</span>
+  <div class="theme-pick" id="themePick"></div>
+</div>
+</header>
+
+<div class="app">
+
+  <aside class="side left">
+    <div class="grp">
+      <div class="sec-t">Розбір письма</div>
+      <p class="desc">Які архаїчні літери проявились у давньому написанні.</p>
+      <div class="breakdown" id="breakdown"></div>
+    </div>
+    <div class="disclaimer">
+      ⚠ <b>Художня реконструкція.</b> Показане написання — можливий варіант у стилі уставу XI ст.,
+      а не історичний документ. Для більшості сучасних імен точна давня форма невідома.
+    </div>
+  </aside>
+
+  <main class="center">
+    <div class="txtzone">
+      <div>
+        <div class="field-lbl">Сучасний текст</div>
+        <input type="text" id="nameInput" maxlength="40" placeholder="напишіть ім'я…" autocomplete="off" spellcheck="false">
+      </div>
+      <div>
+        <div class="field-lbl">ChronoScript · устав XI ст.</div>
+        <div class="ustav-out"><div class="ustav-text" id="ustavText"></div></div>
+      </div>
+    </div>
+
+    <div class="stage"><canvas id="cv" width="512" height="512"></canvas></div>
+
+    <div class="actions">
+      <button class="b gold" id="savePng">⤓ Зберегти PNG</button>
+    </div>
+  </main>
+
+  <aside class="side right">
+    <div class="grp">
+      <div class="sec-t">Давні знаки</div>
+      <div class="symtabs" id="symtabs"></div>
+      <div class="sym-info" id="symInfo"></div>
+      <div class="symgrid" id="symgrid"></div>
+      <div class="sym-note">Наведіть на знак — з’явиться пояснення. Знаки з різних культур; це художній набір, а не система заклять.</div>
+    </div>
+  </aside>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const enc=new TextEncoder();
+
+/* ═══════ УСТАВ XI ст. ═══════ */
+const CHAR_INFO={
+  'Ѧ':'юс малий (давня кирилиця) — літера А',
+  'Ѣ':'ять (давня кирилиця) — стилізує Б',
+  'ᙠ':'канадський складовий знак — стилізує В',
+  'ᚵ':'руна гебо-варіант — літера Г',
+  'Δ':'грецька дельта — стилізує Д',
+  'Ε':'грецька епсилон — літера Е',
+  'Ɛ':'відкрите Е — стилізує Є',
+  'Ӂ':'Ж з дугою (кирилиця) — літера Ж',
+  'Ꙁ':'земля (давня кирилиця) — літера З',
+  'И':'кирилична И — літера И',
+  'ᛁ':'руна іса — стилізує І',
+  'ᛇ':'руна ейваз — стилізує Ї',
+  'Ҋ':'Й з хвостом (кирилиця) — літера Й',
+  'Ϗ':'грецька кай — стилізує К',
+  'Ⱡ':'латинська з рискою — стилізує Л',
+  'Ϻ':'грецька сан — стилізує М',
+  'Ꞑ':'латинська N з гачком — стилізує Н',
+  'Ꙩ':'око (давня кирилиця) — літера О',
+  'Π':'грецька пі — літера П',
+  'Ꝓ':'латинська історична P — стилізує Р',
+  'Ϛ':'грецька стигма — стилізує С',
+  'ᛏ':'руна тіваз — літера Т',
+  'Ꞟ':'латинська U-варіант — стилізує У',
+  'Ѳ':'фіта (кирилиця) — літера Ф',
+  'Ӿ':'кирилична ха з гачком — літера Х',
+  'Ꙡ':'давня кирилиця — стилізує Ц',
+  'Ⱍ':'глаголична «черв» — літера Ч',
+  'Ⲯ':'коптська псі — стилізує Ш',
+  'Ⱋ':'глаголична «ща» — літера Щ',
+  'Ⱐ':'глаголичний єр — стилізує Ь',
+  'Ꙕ':'давня кирилиця — стилізує Ю',
+  'Ꙗ':'йотований аз — літера Я',
+  'Ъ':'єр — знак наприкінці слова',
+};
+const SIGNSET=new Set([
+  'Ꙗ','Ѧ','Ѩ','Ѣ','Ѥ','Ѯ','Ѱ','Ѳ','Ѵ','Ѡ','Ѫ','Ѭ','Ъ','Ь','Ѕ','Ꙑ',
+  'Ⰰ','Ⰱ','Ⰲ','Ⰳ','Ⰴ','Ⰵ','Ⱄ','Ⱅ','Ⱋ','Ⱛ',
+  '☦','✙','✚','✠','⳨','☩','☨',
+  '☀','❂','⊕','✶','✷','✺','❋','✵','✳',
+  '🜍','🜔','🜂','🜄','🜁','🜃','🜚','☿',
+  '☉','☽','♂','♀','♃','♄','♆','♇',
+  'ᚠ','ᚢ','ᚦ','ᚨ','ᚱ','ᚲ','ᚷ','ᚹ','ᛟ','ᛞ',
+  '⁂','❦','❧','⁕','⸙','⳥','⁘','⁙','·',
+  '☯','☤','⚕','⚚','☸','۞','🝞','🜮','🝔','🜛',
+  '❖','◈','⬡','⬢','⧉','⌘','⎔','◉','⊚','⟁','⌬',
+  '❄','❆','⚡','☄','✦','✪','⊛','❃','❉','✼',
+  '⚜','⁜','※','⧊','⟐','⬥','❊','⌗','⯏']);
+/* давня абетка — авторська розкладка (суміш письмен: глаголиця, руни,
+   грецька, коптська, латинська, давня кирилиця). Художня «таємна мова». */
+const ALPHABET={
+  'а':'ѧ','б':'Ѣ','в':'ᙠ','г':'ᚵ','ґ':'Γ','д':'Δ','е':'Ε','є':'Ɛ',
+  'ж':'Ӂ','з':'Ꙁ','и':'И','і':'ᛁ','ї':'ᛇ','й':'Ҋ','к':'Ϗ','л':'Ⱡ',
+  'м':'Ϻ','н':'Ꞑ','о':'Ꙩ','п':'Π','р':'Ꝓ','с':'Ϛ','т':'ᛏ','у':'Ꞟ',
+  'ф':'ѳ','х':'Ӿ','ц':'Ꙡ','ч':'Ⱍ','ш':'Ⲯ','щ':'Ⱋ','ь':'Ⱐ','ю':'Ꙕ',
+  'я':'ꙗ','ъ':'ъ','ё':'є',
+};
+function toUstav(name){
+  if(!name)return {text:''};
+  const raw=name.trim();
+  let letters='',trailing='';
+  for(const ch of raw){ if(SIGNSET.has(ch))trailing+=ch; else letters+=ch; }
+  const low=letters.toLowerCase();
+  const vowelsMod=new Set('аеєиіїоуюяѧ');
+  let out='';
+  for(const ch of low){
+    out += (ALPHABET[ch]!==undefined) ? ALPHABET[ch] : ch;
+  }
+  /* Ъ наприкінці — після приголосної (не голосна, не знак) */
+  const lastOrig=low[low.length-1]||'';
+  const isCyr=/[а-яґєіїёѐ-ӿ]/i.test(lastOrig);
+  if(lastOrig&&isCyr&&!vowelsMod.has(lastOrig)&&!'ъьй'.includes(lastOrig))out+='ъ';
+  return {text:out.toUpperCase()+trailing};
+}
+function breakdown(text){
+  const found=[];const seen=new Set();
+  for(const ch of text){ if(CHAR_INFO[ch]&&!seen.has(ch)){found.push([ch,CHAR_INFO[ch]]);seen.add(ch);} }
+  return found;
+}
+
+/* ═══════ ЯДРО БАЙТКОДУ ═══════ */
+const MINN=7,MAXN=145;
+function Rof(n){return (n-1)/2}
+function capacity(n){const R=Rof(n);return (R+1)*(R+2)/2;}
+function baseCells(n){const c=Rof(n),R=c,o=[];for(let i=0;i<=R;i++)for(let j=0;j<=i;j++)o.push([c+i,c+j]);return o;}
+function mirrors(n,x,y){const c=Rof(n),i=x-c,j=y-c;
+  const p=[[i,j],[j,i],[-i,j],[-j,i],[i,-j],[j,-i],[-i,-j],[-j,-i]];
+  const o=[];for(const [a,b] of p){const X=c+a,Y=c+b;if(X>=0&&Y>=0&&X<n&&Y<n)o.push([X,Y])}return o;}
+function pickN(need){for(let n=MINN;n<=MAXN;n+=2)if(capacity(n)>=need)return n;return MAXN;}
+function textBits(t){const d=enc.encode(t);const bits=new Uint8Array(d.length*8);
+  for(let i=0;i<d.length;i++)for(let b=0;b<8;b++)bits[i*8+b]=(d[i]>>(7-b))&1;return bits;}
+function buildGrid(t){
+  const bits=textBits(t);const n=pickN(bits.length);
+  const g=new Uint8Array(n*n),dm=new Uint8Array(n*n),bc=baseCells(n);
+  const lim=Math.min(bits.length,bc.length);
+  for(let i=0;i<lim;i++){const [x,y]=bc[i];
+    for(const [X,Y] of mirrors(n,x,y)){dm[Y*n+X]=1;if(bits[i])g[Y*n+X]=1}}
+  return {g,dm,n};}
+const CV=$('cv'),CTX=CV.getContext('2d');
+function themeColors(){
+  const cs=getComputedStyle(document.documentElement);
+  return {
+    ONE:cs.getPropertyValue('--ustav').trim()||'#e8d4a8',
+    ZERO:'#100b06',
+    FRAME:'#8f8f8f'
+  };
+}
+let curUstav='';
+let lastGeom=null;
+function renderCode(t){
+  const {ONE,ZERO,FRAME}=themeColors();
+  if(!t){CTX.fillStyle=ZERO;CTX.fillRect(0,0,CV.width,CV.height);lastGeom=null;return;}
+  const {g,dm,n}=buildGrid(t);
+  const pad=1,tw=n+pad*2,cell=Math.floor(CV.width/tw);
+  const ox=Math.floor((CV.width-tw*cell)/2),oy=ox;
+  lastGeom={ox,oy,size:tw*cell};
+  CTX.imageSmoothingEnabled=false;
+  CTX.fillStyle=ZERO;CTX.fillRect(0,0,CV.width,CV.height);
+  CTX.fillStyle=FRAME;CTX.fillRect(ox,oy,tw*cell,tw*cell);
+  CTX.fillStyle=ZERO;CTX.fillRect(ox+pad*cell,oy+pad*cell,n*cell,n*cell);
+  for(let y=0;y<n;y++)for(let x=0;x<n;x++){const i=y*n+x;if(!dm[i]||!g[i])continue;
+    CTX.fillStyle=ONE;CTX.fillRect(ox+(x+pad)*cell,oy+(y+pad)*cell,cell,cell);}
+}
+
+/* ═══════ ЗНАКИ (права панель) ═══════ */
+const SIGN_GROUPS={
+  'Ѧ':{name:'слов’янські літери',info:'давні кириличні літери уставу',list:[
+    ['Ѧ','юс малий — носовий [ę]'],['Ѩ','йотований юс малий'],['Ꙗ','йотований аз — [йа]'],
+    ['Ѣ','ять — давній голосний'],['Ѫ','юс великий — носовий [ǫ]'],['Ѭ','йотований юс великий'],
+    ['Ѡ','омега — з грецької'],['Ѿ','от — омега з титлом'],['Ѱ','псі — [пс]'],['Ѯ','ксі — [кс]'],
+    ['Ѳ','фіта — [ф]'],['Ѵ','іжиця — іпсилон'],['Ѕ','зело — [дз]'],['Ъ','єр'],['Ь','єрь'],
+    ['Ꙑ','єри — давнє ы'],['Ѥ','йотоване є'],['Ѐ','є з наголосом'],['Ҁ','копа — число 90'],
+    ['Ѹ','ук — диграф [у]'],['Ꙋ','монограф ук'],['Ѻ','широке о'],['Ꙁ','земля — давнє з'],
+  ]},
+  'Ⰰ':{name:'глаголиця',info:'найдавніша слов’янська абетка (IX ст.)',list:[
+    ['Ⰰ','аз'],['Ⰱ','буки'],['Ⰲ','веді'],['Ⰳ','глаголь'],['Ⰴ','добро'],['Ⰵ','єсть'],
+    ['Ⰶ','живіте'],['Ⰷ','зело'],['Ⰸ','земля'],['Ⰹ','іже'],['Ⰺ','і'],['Ⰻ','ї'],['Ⰼ','ґерв'],
+    ['Ⰽ','како'],['Ⰾ','люди'],['Ⰿ','мислите'],['Ⱀ','наш'],['Ⱁ','он'],['Ⱂ','покой'],['Ⱃ','рци'],
+    ['Ⱄ','слово'],['Ⱅ','твердо'],['Ⱆ','ук'],['Ⱇ','ферт'],['Ⱈ','хер'],['Ⱉ','від'],['Ⱋ','ща'],
+    ['Ⱌ','ци'],['Ⱍ','черв'],['Ⱎ','ша'],['Ⱏ','єр'],['Ⱑ','ять'],['Ⱓ','ю'],['Ⱛ','іжиця'],
+  ]},
+  '☦':{name:'хрести',info:'християнські хрести різних традицій',list:[
+    ['☦','православний хрест'],['✙','грецький хрест'],['✚','потовщений хрест'],
+    ['✠','мальтійський хрест'],['☩','хрест з опертям'],['⳨','коптський хрест'],
+    ['☨','патріарший хрест'],
+  ]},
+  '☀':{name:'сонце й зорі',info:'солярні символи та зорі',list:[
+    ['☀','сонце'],['❂','сонячна розетка'],['⊕','сонячний хрест (коло з хрестом)'],
+    ['✶','шестипроменева зоря'],['✷','восьмипроменева зоря'],['✺','зоря-квітка'],
+    ['❋','квіткова розетка'],['✵','обертова зоря'],['✳','зірка-розетка'],
+  ]},
+  '🜍':{name:'алхімія',info:'алхімічні знаки стихій та речовин',list:[
+    ['🜍','сірка — алхімічний знак'],['🜔','сіль'],['🜂','вогонь'],['🜄','вода'],
+    ['🜁','повітря'],['🜃','земля'],['🜚','золото / сонце'],['☿','ртуть / Меркурій'],
+  ]},
+  '☉':{name:'астрологія',info:'планетні символи',list:[
+    ['☉','Сонце'],['☽','Місяць'],['♂','Марс'],['♀','Венера'],['♃','Юпітер'],
+    ['♄','Сатурн'],['♆','Нептун'],['♇','Плутон'],
+  ]},
+  'ᚠ':{name:'руни',info:'руни всіх футарків: старший, молодший, англосаксонський',list:[
+    ['ᚠ','феху — достаток'],['ᚢ','уруз — сила'],['ᚦ','турісаз — захист'],['ᚨ','ансуз — слово'],
+    ['ᚱ','райдо — дорога'],['ᚲ','кеназ — факел'],['ᚷ','ґебо — дар'],['ᚹ','вуньйо — радість'],
+    ['ᚺ','хаґалаз — град'],['ᚾ','наутіз — потреба'],['ᛁ','іса — лід'],['ᛃ','єра — врожай'],
+    ['ᛇ','ейваз — тис'],['ᛈ','перто — таємниця'],['ᛉ','альгіз — захист'],['ᛊ','совіло — сонце'],
+    ['ᛏ','тіваз — бог Тюр'],['ᛒ','беркана — береза'],['ᛖ','еваз — кінь'],['ᛗ','манназ — людина'],
+    ['ᛚ','лаґуз — вода'],['ᛜ','інґваз — бог Інґ'],['ᛞ','даґаз — день'],['ᛟ','отал — спадок'],
+    ['ᚪ','ак — дуб (англосакс.)'],['ᚫ','еск — ясен'],['ᚣ','юр (англосакс.)'],['ᛠ','еар (англосакс.)'],
+    ['ᚧ','стунґ турс (молодш.)'],['ᚯ','о з рискою'],['ᚮ','о (молодш.)'],['ᛦ','ир (молодш.)'],
+    ['ᚡ','в (варіант)'],['ᚤ','ю (варіант)'],['ᚥ','w'],['ᚨ','а'],['ᛘ','м (довга)'],['ᛧ','ир варіант'],
+  ]},
+  '⁂':{name:'орнамент',info:'декоративні знаки та розділювачі',list:[
+    ['⁂','астеризм — три зорі'],['❦','рослинний декор'],['❧','листок-розділювач'],
+    ['⁕','квіткова зірочка'],['⸙','листкова розетка'],['⳥','коптський орнамент'],
+    ['⁘','чотириточчя'],['⁙','п’ятиточчя'],
+  ]},
+  '☯':{name:'магічні',info:'знаки різних традицій — культурні символи, не заклинання',list:[
+    ['☯','інь-ян — рівновага (даосизм)'],['☤','кадуцей — жезл торгівлі'],['⚕','жезл Асклепія — медицина'],
+    ['⚚','жезл Гермеса'],['☸','колесо дгарми (буддизм)'],['۞','арабська розета'],
+    ['🝞','«філософський камінь» (алхімія)'],['🜮','купорос (алхімія)'],['🝔','амальгама (алхімія)'],
+    ['🜛','магній (алхімія)'],
+  ]},
+  '❖':{name:'геометрія',info:'геометричні та мандальні знаки',list:[
+    ['❖','ромб-квітка'],['◈','ромб у ромбі'],['⬡','шестикутник'],['⬢','заповнений шестикутник'],
+    ['⧉','квадрати'],['⌘','вузол нескінченності'],['⎔','сота'],['◉','коло в колі'],
+    ['⊚','подвійне коло'],['⟁','трикутник'],['⌬','кільце'],
+  ]},
+  '❄':{name:'стихії й небо',info:'сніжинки, зорі, небесні знаки',list:[
+    ['❄','сніжинка'],['❆','густа сніжинка'],['⚡','блискавка'],['☄','комета'],
+    ['✦','чотирипроменева зоря'],['✪','зоря в колі'],['❂','сонце-розетка'],['⊛','зоря в колі'],
+    ['✵','вихрова зоря'],['❃','квіткова зоря'],['❉','зоря-квітка'],['✼','відкрита зоря'],
+  ]},
+  '⚜':{name:'знаки сили',info:'геральдичні та захисні символи',list:[
+    ['⚜','флер-де-ліс — королівська лілія'],['⁜','хрест із крапками'],['※','квітковий знак'],
+    ['⧊','трикутник у колі'],['⟐','ромб у колі'],['⬥','ромб'],['❊','вісім пелюсток'],
+    ['⌗','решітка'],['⯏','зоряний знак'],
+  ]},
+};
+/* усі символи з груп автоматично потрапляють у SIGNSET (щоб Ъ до них не липнув) */
+Object.values(SIGN_GROUPS).forEach(g=>g.list.forEach(([ch])=>SIGNSET.add(ch)));
+let curSign='Ѧ';
+function buildSymTabs(){
+  const box=$('symtabs');box.innerHTML='';
+  Object.keys(SIGN_GROUPS).forEach(k=>{
+    const g=SIGN_GROUPS[k];
+    const b=document.createElement('button');b.className='symtab'+(k===curSign?' on':'');
+    b.textContent=k;b.title=g.name+' — '+g.info;
+    b.onclick=()=>{curSign=k;buildSymTabs();buildSymGrid();$('symInfo').textContent=g.info;};
+    box.appendChild(b);
+  });
+  $('symInfo').textContent=SIGN_GROUPS[curSign].info;
+}
+function buildSymGrid(){
+  const box=$('symgrid');box.innerHTML='';
+  SIGN_GROUPS[curSign].list.forEach(([s,desc])=>{
+    const b=document.createElement('button');b.type='button';b.textContent=s;
+    b.title=desc;
+    b.onmousedown=e=>e.preventDefault();
+    b.onclick=()=>{const el=$('nameInput');el.value=(el.value+s).slice(0,40);el.focus();update();
+      toast(s+' · '+desc);};
+    box.appendChild(b);
+  });
+}
+
+/* ═══════ ОНОВЛЕННЯ ═══════ */
+let renderTimer=null;
+function update(){
+  const {text}=toUstav($('nameInput').value);
+  curUstav=text;
+  const zone=$('ustavText');zone.innerHTML='';
+  [...text].forEach((ch,i)=>{
+    const span=document.createElement('span');span.className='ch';span.textContent=ch;
+    span.style.animationDelay=(i*0.05)+'s';zone.appendChild(span);
+  });
+  const bd=breakdown(text);const box=$('breakdown');box.innerHTML='';
+  if(!bd.length){box.innerHTML='<div class="bch" style="color:var(--acc-dim)">напишіть імʼя — тут зʼявиться розбір архаїчних літер</div>';}
+  bd.forEach(([ch,info])=>{const el=document.createElement('div');el.className='bch';
+    el.innerHTML='<b>'+ch+'</b>'+info;box.appendChild(el);});
+  clearTimeout(renderTimer);renderTimer=setTimeout(()=>renderCode(text),240);
+}
+$('nameInput').oninput=update;
+
+$('savePng').onclick=()=>{
+  if(!curUstav||!lastGeom){toast('Спершу напишіть ім\'я');return;}
+  /* вирізаємо ЛИШЕ квадрат орнаменту (без полів) — щоб декодер міг сканувати */
+  const {ox,oy,size}=lastGeom;
+  const scale=3,ex=document.createElement('canvas');
+  ex.width=size*scale;ex.height=size*scale;
+  const c=ex.getContext('2d');c.imageSmoothingEnabled=false;
+  c.drawImage(CV, ox,oy,size,size, 0,0,ex.width,ex.height);
+  ex.toBlob(b=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);
+    a.download='chronoscript_'+curUstav+'.png';a.click();
+    setTimeout(()=>URL.revokeObjectURL(a.href),1000);toast('Збережено');});
+};
+let toastT;
+function toast(m){$('toast').textContent=m;$('toast').classList.add('show');
+  clearTimeout(toastT);toastT=setTimeout(()=>$('toast').classList.remove('show'),2200);}
+
+/* ═══════ ТЕМИ ═══════ */
+const THEMES={
+  'глина':  {acc:'#c9a267',hot:'#e6c584',dim:'#8a6d42',ink:'#0f0b06',panel:'#1a130a',panel2:'#241a0e',line:'rgba(201,162,103,.22)',parch:'#efe4cf',muted:'#9d876a',ustav:'#e8d4a8'},
+  'смарагд':{acc:'#5ec98a',hot:'#8fe6b0',dim:'#3f8a5f',ink:'#06100b',panel:'#0a1a12',panel2:'#0e2418',line:'rgba(94,201,138,.22)',parch:'#d8f0e2',muted:'#7aa88f',ustav:'#c0e8d0'},
+  'аметист':{acc:'#b088e0',hot:'#cba8ff',dim:'#7a5aa0',ink:'#0d0812',panel:'#160f22',panel2:'#1e1430',line:'rgba(176,136,224,.22)',parch:'#e8ddf5',muted:'#a08bc0',ustav:'#dcc8f0'},
+  'графіт': {acc:'#a0b0c0',hot:'#d0e0f0',dim:'#6a7a8a',ink:'#0a0c0e',panel:'#141820',panel2:'#1c2430',line:'rgba(160,176,192,.22)',parch:'#e0e6ec',muted:'#8a95a0',ustav:'#d0dae4'},
+  'рубін':  {acc:'#e07080',hot:'#ff9aa8',dim:'#a04a58',ink:'#120608',panel:'#200c10',panel2:'#2c1016',line:'rgba(224,112,128,.22)',parch:'#f5dde0',muted:'#c08b92',ustav:'#f0c8ce'},
+  'мідь':   {acc:'#d98a5c',hot:'#f5ad82',dim:'#9a6340',ink:'#100a07',panel:'#1c130c',panel2:'#281a10',line:'rgba(217,138,92,.22)',parch:'#f0dccb',muted:'#b08c72',ustav:'#f0d8b8'},
+};
+let baseTheme='глина',lightMode=false;
+function applyTheme(name){
+  const t=THEMES[name]||THEMES['глина'];baseTheme=name;
+  const r=document.body.style;
+  if(!lightMode){
+    r.setProperty('--ink',t.ink);r.setProperty('--panel',t.panel);r.setProperty('--panel2',t.panel2);
+    r.setProperty('--parchment',t.parch);r.setProperty('--muted',t.muted);r.setProperty('--ustav',t.ustav);
+  }else{
+    ['--ink','--panel','--panel2','--parchment','--muted','--ustav'].forEach(v=>r.removeProperty(v));
+  }
+  r.setProperty('--acc',t.acc);r.setProperty('--acc-hot',t.hot);
+  r.setProperty('--acc-dim',t.dim);r.setProperty('--line',t.line);
+  try{localStorage.setItem('taina_theme',name);}catch(e){}
+  [...$('themePick').children].forEach(b=>b.classList.toggle('on',b.dataset.t===name));
+  if(typeof update==='function')update();
+}
+function setMode(light){
+  lightMode=light;document.body.classList.toggle('light-mode',light);
+  $('modeDark').classList.toggle('on',!light);$('modeLight').classList.toggle('on',light);
+  try{localStorage.setItem('taina_mode',light?'light':'dark');}catch(e){}
+  applyTheme(baseTheme);
+}
+function buildThemes(){
+  const box=$('themePick');box.innerHTML='';
+  Object.keys(THEMES).forEach(name=>{
+    const b=document.createElement('button');b.dataset.t=name;b.title=name;
+    b.style.background=THEMES[name].acc;b.onclick=()=>applyTheme(name);box.appendChild(b);
+  });
+}
+buildThemes();
+$('themeBtn').onclick=()=>$('themeBar').classList.toggle('hide');
+$('modeDark').onclick=()=>setMode(false);
+$('modeLight').onclick=()=>setMode(true);
+let savedMode='dark';try{savedMode=localStorage.getItem('taina_mode')||'dark';}catch(e){}
+lightMode=(savedMode==='light');document.body.classList.toggle('light-mode',lightMode);
+$('modeDark').classList.toggle('on',!lightMode);$('modeLight').classList.toggle('on',lightMode);
+let savedTheme='глина';try{savedTheme=localStorage.getItem('taina_theme')||'глина';}catch(e){}
+if(!THEMES[savedTheme])savedTheme='глина';
+applyTheme(savedTheme);
+
+/* старт */
+buildSymTabs();buildSymGrid();
+update();
+</script>
+</body>
+</html>

@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Галерея орнаментів · taina</title>
+<meta name="description" content="Галерея орнаментів taina — симетричні візерунки, які можна відсканувати та прочитати. Кожен орнамент кодує слово у вигляді байткоду.">
+<link rel="canonical" href="https://astra31415926.github.io/Life_10/gallery.html">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Галерея орнаментів · taina">
+<meta property="og:description" content="Орнаменти, які можна відсканувати та прочитати.">
+<meta property="og:image" content="https://astra31415926.github.io/Life_10/og-image.png">
+<meta property="og:url" content="https://astra31415926.github.io/Life_10/gallery.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Галерея орнаментів · taina">
+<meta name="twitter:description" content="Орнаменти, які можна відсканувати та прочитати.">
+<meta name="twitter:image" content="https://astra31415926.github.io/Life_10/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0d0a08;--panel:#15100b;--panel2:#1d1610;
+  --acc:#c9a876;--acc-hot:#e8c890;--acc-dim:#8f7451;
+  --parchment:#ede3d0;--muted:#94836a;--line:rgba(201,168,118,.22);
+  --ok:#58d668;--bad:#e5705a;
+  --mono:'JetBrains Mono',monospace;--sans:'Inter',system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--ink);color:var(--parchment);font-family:var(--sans);line-height:1.5;min-height:100vh;
+  background-image:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(201,168,118,.07),transparent)}
+a{color:inherit;text-decoration:none}
+.hide{display:none!important}
+header{border-bottom:1px solid var(--line);background:rgba(13,10,8,.9);backdrop-filter:blur(10px);
+  position:sticky;top:0;z-index:60}
+.nav{display:flex;align-items:center;gap:14px;height:54px;max-width:1560px;margin:0 auto;padding:0 20px}
+.mark{font-family:var(--mono);font-weight:700;font-size:18px;letter-spacing:.07em;display:flex;align-items:center;gap:8px}
+.mark::after{content:'';width:7px;height:7px;background:var(--acc)}
+.navlinks{margin-left:6px;display:flex;gap:6px}
+.navlink{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--muted);padding:8px 14px;
+  border:1px solid var(--line);border-radius:9px;transition:.15s;text-transform:uppercase;white-space:nowrap}
+.navlink:hover{color:var(--acc-hot);border-color:var(--acc-dim)}
+.navlink.gold{color:var(--acc-hot);border-color:rgba(201,168,118,.5);background:rgba(201,168,118,.12)}
+.hero{max-width:1400px;margin:0 auto;padding:40px 22px 26px;text-align:center}
+.hero h1{font-family:var(--mono);font-size:clamp(24px,4vw,38px);font-weight:700;letter-spacing:.02em;
+  color:var(--parchment);margin-bottom:12px}
+.hero h1 b{color:var(--acc)}
+.hero p{font-size:15px;color:var(--muted);max-width:560px;margin:0 auto;line-height:1.65}
+.bar{max-width:1400px;margin:0 auto;padding:0 22px 20px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center}
+.count{font-family:var(--mono);font-size:12.5px;color:var(--acc);border:1px solid var(--line);border-radius:8px;padding:8px 14px}
+.grid{max-width:1400px;margin:0 auto;padding:0 22px 60px;display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:18px}
+.card{border:1px solid var(--line);border-radius:14px;padding:14px;background:var(--panel);
+  display:flex;flex-direction:column;gap:11px;transition:.18s;cursor:pointer}
+.card:hover{border-color:var(--acc-dim);transform:translateY(-3px);box-shadow:0 12px 30px rgba(0,0,0,.4)}
+.card canvas{width:100%;aspect-ratio:1;image-rendering:pixelated;border-radius:8px;background:#0a0806}
+.card .word{font-family:var(--mono);font-size:15px;font-weight:600;color:var(--parchment);text-align:center;word-break:break-word;line-height:1.3}
+.card .meta{font-family:var(--mono);font-size:10.5px;color:var(--acc-dim);text-align:center;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.card .meta span{white-space:nowrap}
+.status{max-width:700px;margin:40px auto;padding:24px;border-radius:14px;border:1px solid var(--line);
+  background:var(--panel);font-family:var(--mono);font-size:13px;line-height:1.7}
+.status.err{border-color:rgba(229,112,90,.4)}
+.status .t{color:var(--acc);font-weight:600;margin-bottom:8px;font-size:14px}
+.status .err-t{color:var(--bad)}
+.status code{background:var(--panel2);padding:2px 6px;border-radius:4px;color:var(--acc-hot);font-size:12px}
+.status .hint{color:var(--muted);margin-top:10px;font-size:12px}
+.loading{text-align:center;padding:60px 20px;font-family:var(--mono);color:var(--muted);font-size:14px}
+.spin{width:34px;height:34px;border:3px solid var(--line);border-top-color:var(--acc);border-radius:50%;margin:0 auto 18px;animation:sp 1s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.empty{text-align:center;padding:60px 20px;font-family:var(--mono);color:var(--acc-dim);font-size:14px;line-height:1.8}
+footer{border-top:1px solid var(--line);padding:26px 22px;text-align:center;font-family:var(--mono);font-size:11.5px;color:var(--acc-dim);line-height:1.7}
+.modal{position:fixed;inset:0;background:rgba(5,4,3,.85);backdrop-filter:blur(6px);z-index:100;
+  display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:.25s}
+.modal.show{opacity:1;pointer-events:auto}
+.modal-box{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:26px;max-width:440px;width:100%;text-align:center;position:relative}
+.modal-box canvas{width:100%;max-width:320px;aspect-ratio:1;image-rendering:pixelated;border-radius:12px;background:#0a0806;margin:0 auto 18px}
+.modal-box .mw{font-family:var(--mono);font-size:22px;font-weight:700;color:var(--acc-hot);margin-bottom:6px;word-break:break-word}
+.modal-box .mmeta{font-family:var(--mono);font-size:12px;color:var(--muted);margin-bottom:18px}
+.modal-close{position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:9px;border:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer;font-size:18px}
+.modal-close:hover{color:var(--acc-hot);border-color:var(--acc-dim)}
+.share{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.share button{font-family:var(--mono);font-size:12px;font-weight:600;padding:10px 16px;border-radius:9px;border:1px solid var(--line);background:transparent;color:var(--acc);cursor:pointer;transition:.15s}
+.share button:hover{color:var(--acc-hot);border-color:var(--acc-dim);background:rgba(201,168,118,.1)}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--panel2);border:1px solid var(--acc-dim);border-radius:11px;padding:12px 20px;font-family:var(--mono);font-size:13px;color:var(--acc-hot);opacity:0;pointer-events:none;transition:.3s;z-index:120}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<header><div class="nav">
+  <a href="#" class="mark">taina</a>
+  <div class="navlinks">
+    <a href="index.html" class="navlink">лабораторія байткоду</a>
+    <a href="#" class="navlink gold">Галерея</a>
+  </div>
+</div></header>
+<div class="hero">
+  <h1>Галерея орнаментів</h1>
+  <p>Орнаменти, які можна відсканувати та прочитати.</p>
+</div>
+<div class="bar"><div class="count" id="count">Завантаження…</div></div>
+<div id="content"><div class="loading"><div class="spin"></div>Читаємо галерею…</div></div>
+<footer>taina · читабельний орнамент-байткод<br>натхнено українською традицією · кожен візерунок можна декодувати</footer>
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <button class="modal-close" id="modal-close">×</button>
+    <canvas id="modal-cv" width="640" height="640"></canvas>
+    <div class="mw" id="modal-word"></div>
+    <div class="mmeta" id="modal-meta"></div>
+    <div class="share">
+      <button id="share-btn">Поділитися</button>
+      <button id="share-link">🔗 Копіювати посилання</button>
+      <a href="index.html" class="navlink" style="padding:10px 16px">✎ Створити свій</a>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const SUPA_URL='https://iieahzklwngqugkovhrs.supabase.co';
+const SUPA_KEY='sb_publishable_FHtRNaLBvDgDTSLa_8eQnQ_oPMWCIxF';
+const $=id=>document.getElementById(id);
+const enc=new TextEncoder();
+const MINN=7,MAXN=145;
+function Rof(n){return (n-1)/2}
+function capacity(m,n){const R=Rof(n);
+  if(m==='oct')return (R+1)*(R+2)/2;
+  if(m==='quad')return (R+1)*(R+1);
+  if(m==='half')return (R+1)*n;return 0;}
+function baseCells(m,n){const c=Rof(n),R=c,o=[];
+  if(m==='oct'){for(let i=0;i<=R;i++)for(let j=0;j<=i;j++)o.push([c+i,c+j]);}
+  else if(m==='quad'){for(let i=0;i<=R;i++)for(let j=0;j<=R;j++)o.push([c+i,c+j]);}
+  else{for(let y=0;y<n;y++)for(let i=0;i<=R;i++)o.push([c+i,y]);}
+  return o;}
+function mirrors(m,n,x,y){const c=Rof(n),i=x-c,j=y-c;let p;
+  if(m==='oct')p=[[i,j],[j,i],[-i,j],[-j,i],[i,-j],[j,-i],[-i,-j],[-j,-i]];
+  else if(m==='quad')p=[[i,j],[-i,j],[i,-j],[-i,-j]];
+  else p=[[i,j],[-i,j]];
+  const o=[];for(const [a,b] of p){const X=c+a,Y=c+b;if(X>=0&&Y>=0&&X<n&&Y<n)o.push([X,Y])}
+  return o;}
+function pickN2(m,need){for(let n=MINN;n<=MAXN;n+=2)if(capacity(m,n)>=need)return n;return MAXN;}
+function textBits(t){const data=enc.encode(t);const bits=new Uint8Array(data.length*8);
+  for(let i=0;i<data.length;i++)for(let b=0;b<8;b++)bits[i*8+b]=(data[i]>>(7-b))&1;return bits;}
+function rowBuild(text,maxB){const chars=[...text],w=maxB*8,h=Math.max(chars.length,1);
+  const g=new Uint8Array(w*h);
+  chars.forEach((c,r)=>{const bs=enc.encode(c);
+    for(let i=0;i<maxB;i++){const v=i<bs.length?bs[i]:0;
+      for(let b=0;b<8;b++)g[r*w+i*8+b]=(v>>(7-b))&1;}});
+  return {g,w,h};}
+function fillChannel(t,n,m,markBit){
+  const g=new Uint8Array(n*n),dm=new Uint8Array(n*n);
+  const bc=baseCells(m,n);let seq;
+  if(markBit===null||markBit===undefined){seq=textBits(t);}
+  else{const bits=textBits(t);seq=new Uint8Array(bits.length+1);seq[0]=markBit;seq.set(bits,1);}
+  const lim=Math.min(seq.length,bc.length);
+  for(let i=0;i<lim;i++){const [x,y]=bc[i];
+    for(const [X,Y] of mirrors(m,n,x,y)){dm[Y*n+X]=1;if(seq[i])g[Y*n+X]=1}}
+  return {g,dm};}
+const RGB_SOFT={r:[220,50,60],g:[65,195,65],b:[60,70,215]};
+function renderBytecode(cv,rec){
+  const s=rec.settings||{};
+  const mode=rec.mode||'oct';
+  const layers=rec.layers||1;
+  const colOne=s.colOne||'#f5f5f5';
+  const colZero=s.colZero||'#0d0a08';
+  const frameW=(s.frame!==undefined)?s.frame:1;
+  const words=layers===3?(s.words||[rec.word,'','']):[rec.word,'',''];
+  const monoMark=s.monoMark||0;
+  let W,H;const grid={},dmask={};
+  if(mode==='row'){
+    let maxB=1;words.forEach(t=>{for(const c of (t||'')){const k=enc.encode(c).length;if(k>maxB)maxB=k}});
+    const h=Math.max(...words.map(t=>[...(t||'')].length),1);W=maxB*8;H=h;
+    ['r','g','b'].forEach((k,i)=>{
+      const g=new Uint8Array(W*H),dm=new Uint8Array(W*H);
+      if(words[i]){const r=rowBuild(words[i],maxB);g.set(r.g.subarray(0,g.length));
+        const rows=[...words[i]].length;
+        for(let y=0;y<Math.min(rows,H);y++)for(let x=0;x<W;x++)dm[y*W+x]=1;}
+      grid[k]=g;dmask[k]=dm;});
+  }else{
+    const extraR=(layers===3&&monoMark===1)?1:0;
+    let maxBits=0;words.forEach(t=>{if(t)maxBits=Math.max(maxBits,enc.encode(t).length*8)});
+    const n=pickN2(mode,maxBits+extraR);W=H=n;
+    ['r','g','b'].forEach((k,i)=>{
+      let markBit=null;if(layers===3&&monoMark===1&&i===0)markBit=1;
+      const r=fillChannel(words[i]||'',n,mode,markBit);
+      grid[k]=r.g;dmask[k]=r.dm;});
+  }
+  const FRAME_A='#0a0806', FRAME_B='#f4efe6';
+const pad=3,tw=W+pad*2,th=H+pad*2;  /* всі коди галереї — нова рамка з лінійкою */
+const cell=Math.max(1,Math.floor(cv.width/Math.max(tw,th)));
+const ctx=cv.getContext('2d');ctx.imageSmoothingEnabled=false;
+const ox=Math.floor((cv.width-tw*cell)/2),oy=Math.floor((cv.height-th*cell)/2);
+ctx.fillStyle='#0a0806';ctx.fillRect(0,0,cv.width,cv.height);
+if(pad>=3){
+  const CW=tw, CHc=th;
+  const cellAt=(cx,cy,col)=>{ctx.fillStyle=col;ctx.fillRect(ox+cx*cell,oy+cy*cell,cell,cell);};
+  ctx.fillStyle=colZero;ctx.fillRect(ox,oy,tw*cell,th*cell);
+  for(let cx=0;cx<CW;cx++){cellAt(cx,0,FRAME_A);cellAt(cx,CHc-1,FRAME_A);}
+  for(let cy=1;cy<CHc-1;cy++){cellAt(0,cy,FRAME_A);cellAt(CW-1,cy,FRAME_A);}
+  for(let cx=1;cx<CW-1;cx++){cellAt(cx,1,FRAME_B);cellAt(cx,CHc-2,FRAME_B);}
+  for(let cy=2;cy<CHc-2;cy++){cellAt(1,cy,FRAME_B);cellAt(CW-2,cy,FRAME_B);}
+  for(let cx=2;cx<CW-2;cx++){cellAt(cx,2,((cx+2)%2===0)?FRAME_A:FRAME_B);cellAt(cx,CHc-3,((cx+CHc-3)%2===0)?FRAME_A:FRAME_B);}
+  for(let cy=3;cy<CHc-3;cy++){cellAt(2,cy,((2+cy)%2===0)?FRAME_A:FRAME_B);cellAt(CW-3,cy,((CW-3+cy)%2===0)?FRAME_A:FRAME_B);}
+}else if(pad>0){ctx.fillStyle='#8f8f8f';ctx.fillRect(ox,oy,tw*cell,th*cell);}
+ctx.fillStyle=colZero;ctx.fillRect(ox+pad*cell,oy+pad*cell,W*cell,H*cell);
+  ctx.fillStyle=colZero;ctx.fillRect(ox+pad*cell,oy+pad*cell,W*cell,H*cell);
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++){
+    const i=y*W+x;
+    if(layers===3){
+      const on={r:dmask.r[i]&&grid.r[i],g:dmask.g[i]&&grid.g[i],b:dmask.b[i]&&grid.b[i]};
+      if(!on.r&&!on.g&&!on.b)continue;
+      let R=0,G=0,B=0;
+      if(on.r){R+=RGB_SOFT.r[0];G+=RGB_SOFT.r[1];B+=RGB_SOFT.r[2]}
+      if(on.g){R+=RGB_SOFT.g[0];G+=RGB_SOFT.g[1];B+=RGB_SOFT.g[2]}
+      if(on.b){R+=RGB_SOFT.b[0];G+=RGB_SOFT.b[1];B+=RGB_SOFT.b[2]}
+      ctx.fillStyle=`rgb(${Math.min(255,R)},${Math.min(255,G)},${Math.min(255,B)})`;
+      ctx.fillRect(ox+(x+pad)*cell,oy+(y+pad)*cell,cell,cell);
+    }else{
+      if(!dmask.r[i]||!grid.r[i])continue;
+      ctx.fillStyle=colOne;
+      ctx.fillRect(ox+(x+pad)*cell,oy+(y+pad)*cell,cell,cell);
+    }
+  }
+}
+async function loadGallery(){
+  try{
+    const resp=await fetch(`${SUPA_URL}/rest/v1/bytecodes?select=*&order=created_at.desc&limit=200`,{
+      headers:{'apikey':SUPA_KEY,'Authorization':`Bearer ${SUPA_KEY}`}
+    });
+    if(!resp.ok){const txt=await resp.text();showError(resp.status,txt);return;}
+    const data=await resp.json();renderGallery(data);
+  }catch(e){showError('network',e.message);}
+}
+function showError(status,detail){
+  $('count').textContent='помилка';
+  $('content').innerHTML=`<div class="status err">
+    <div class="t err-t">Не вдалося завантажити галерею</div>
+    <div>Статус: <code>${status}</code></div>
+    <div style="margin-top:8px;color:var(--muted);word-break:break-all">${(detail||'').slice(0,200)}</div>
+    <div class="hint">Це діагностика для налаштування. Найчастіші причини:<br>
+    • політики доступу (RLS) не дозволяють читання<br>
+    • невірний ключ або URL<br>
+    • таблиця називається не <code>bytecodes</code></div>
+  </div>`;
+}
+function renderGallery(items){
+  ALL_ITEMS=items;
+  $('count').textContent=items.length===0?'поки порожньо':`${items.length} орнаментів`;
+  if(!items.length){
+    $('content').innerHTML=`<div class="empty">Галерея поки порожня.<br>
+      Будь першим — створи орнамент у <a href="index.html" style="color:var(--acc)">лабораторії</a> і опублікуй.</div>`;
+    return;
+  }
+  const grid=document.createElement('div');grid.className='grid';
+  items.forEach(rec=>{
+    const card=document.createElement('div');card.className='card';
+    const cv=document.createElement('canvas');cv.width=cv.height=400;
+    card.appendChild(cv);
+    const w=document.createElement('div');w.className='word';w.textContent=rec.word;card.appendChild(w);
+    const meta=document.createElement('div');meta.className='meta';
+    const modeLabel={oct:'×8',quad:'×4',half:'×2',row:'×1'}[rec.mode]||rec.mode;
+    meta.innerHTML=`<span>${modeLabel}</span>${rec.layers===3?'<span>RGB</span>':''}${rec.lang?`<span>${rec.lang}</span>`:''}`;
+    card.appendChild(meta);
+    try{renderBytecode(cv,rec)}catch(e){}
+    card.onclick=()=>openModal(rec);
+    grid.appendChild(card);
+  });
+  $('content').innerHTML='';$('content').appendChild(grid);
+  openFromURL();
+}
+let ALL_ITEMS=[];
+let curRec=null;
+function openModal(rec){
+  curRec=rec;
+  renderBytecode($('modal-cv'),rec);
+  $('modal-word').textContent=rec.word;
+  const modeLabel={oct:'×8',quad:'×4',half:'×2',row:'×1'}[rec.mode]||rec.mode;
+  $('modal-meta').textContent=`симетрія ${modeLabel}${rec.layers===3?' · RGB':''}${rec.lang?' · '+rec.lang:''} · читабельний орнамент`;
+  $('modal').classList.add('show');
+  /* свій адрес для цієї роботи */
+  if(rec.id!==undefined){
+    history.replaceState(null,'',`?id=${rec.id}`);
+    document.title=`«${rec.word}» — читабельний орнамент · taina`;
+  }
+}
+function closeModal(){
+  $('modal').classList.remove('show');
+  history.replaceState(null,'',location.pathname);
+  document.title='Галерея читабельних орнаментів · taina';
+}
+$('modal-close').onclick=closeModal;
+$('modal').onclick=e=>{if(e.target===$('modal'))closeModal();};
+$('share-link').onclick=()=>{navigator.clipboard.writeText(location.href).then(()=>toast('Посилання скопійовано'));};
+
+/* ═══════ ПОДІЛИТИСЯ ═══════ */
+async function copyLinkFallback(){
+  try{
+    await navigator.clipboard.writeText(location.href);
+    toast('Посилання скопійовано');
+  }catch(e){
+    /* якщо і буфер недоступний — показати поле з посиланням */
+    try{
+      const inp=document.createElement('input');
+      inp.value=location.href;inp.style.cssText='position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:9999;width:80vw;max-width:420px;padding:12px;font-size:14px';
+      document.body.appendChild(inp);inp.select();
+      document.execCommand&&document.execCommand('copy');
+      toast('Посилання скопійовано');
+      setTimeout(()=>inp.remove(),100);
+    }catch(_){}
+  }
+}
+$('share-btn').onclick=async()=>{
+  const word=curRec?curRec.word:'taina';
+  const shareData={
+    title:'taina',
+    text:`Орнамент, що містить текст — ${word}. Створено на taina.`,
+    url:location.href,
+  };
+  try{
+    if(navigator.share){
+      try{
+        await navigator.share(shareData);
+      }catch(err){
+        /* користувач скасував — це не помилка */
+        if(err&&err.name!=='AbortError'){await copyLinkFallback();}
+      }
+    }else{
+      await copyLinkFallback();
+    }
+  }catch(e){
+    await copyLinkFallback();
+  }
+};
+let toastT;
+function toast(m){$('toast').textContent=m;$('toast').classList.add('show');
+  clearTimeout(toastT);toastT=setTimeout(()=>$('toast').classList.remove('show'),2200);}
+/* якщо зайшли за прямим посиланням ?id=N — відкрити цю роботу */
+function openFromURL(){
+  const id=new URLSearchParams(location.search).get('id');
+  if(!id)return;
+  const rec=ALL_ITEMS.find(r=>String(r.id)===String(id));
+  if(rec)openModal(rec);
+}
+loadGallery();
+</script>
+
+
+
+  <!-- ═══ TAINA · МОБІЛЬНЕ v7 · ГАЛЕРЕЯ · вставити ПЕРЕД </body> ═══ -->
+<style>
+#g7-theme{display:none!important;}
+@media(max-width:768px){
+  /* ── ШАПКА: точно як у лабораторії ── */
+  .nav{display:flex!important;align-items:center;gap:8px!important;padding:0 12px!important;}
+  .mark{flex:0 0 auto;order:0;}
+  .navlinks{order:1;display:flex!important;gap:6px;margin-left:8px!important;flex:0 0 auto;}
+  .navlink{display:inline-flex!important;align-items:center;padding:7px 11px!important;
+    font-size:10px!important;white-space:nowrap;}
+  #g7-theme{display:inline-flex!important;align-items:center;justify-content:center;
+    margin-left:auto!important;order:9;width:38px;height:38px;border-radius:10px;
+    font-size:16px;border:1px solid var(--line);background:transparent;cursor:pointer;flex:0 0 auto;}
+  .hero{padding:20px 16px 12px!important;}
+  .hero h1{font-size:22px!important;}
+  .hero p{font-size:13px!important;}
+  .grid{grid-template-columns:1fr!important;padding:0 16px 40px!important;gap:14px!important;}
+}
+</style>
+<script>
+(function(){
+var TH=[
+ {n:'🌙',ink:'#0d0a08',panel:'#1a1410',panel2:'#241c15',parch:'#f2e9d8',muted:'#b09a7c',
+  acc:'#d4b483',hot:'#ffe6b8',dim:'#a08760',line:'rgba(212,180,131,.34)',light:false},
+ {n:'☀️',ink:'#f3eee3',panel:'#ffffff',panel2:'#e9e1d2',parch:'#191309',muted:'#4a3f2e',
+  acc:'#7a4f10',hot:'#4a2f05',dim:'#6f5c38',line:'rgba(90,70,40,.42)',light:true},
+ {n:'◐',ink:'#1a1c1e',panel:'#26292d',panel2:'#31353a',parch:'#f0f1f3',muted:'#adb3b9',
+  acc:'#c6ccd3',hot:'#ffffff',dim:'#8a9097',line:'rgba(198,204,211,.34)',light:false},
+ {n:'❄️',ink:'#0a1622',panel:'#132433',panel2:'#1b3346',parch:'#e6f3fb',muted:'#9dbdd2',
+  acc:'#6fd2f0',hot:'#c2edff',dim:'#4d8ba6',line:'rgba(111,210,240,.36)',light:false}
+];
+var ti=0;try{ti=parseInt(localStorage.getItem('taina_th'))||0;}catch(e){}
+function applyTh(i){
+  ti=((i%TH.length)+TH.length)%TH.length;var t=TH[ti],r=document.body.style;
+  r.setProperty('--ink',t.ink);r.setProperty('--panel',t.panel);r.setProperty('--panel2',t.panel2);
+  r.setProperty('--parchment',t.parch);r.setProperty('--muted',t.muted);
+  r.setProperty('--acc',t.acc);r.setProperty('--acc-hot',t.hot);
+  r.setProperty('--acc-dim',t.dim);r.setProperty('--line',t.line);
+  document.body.style.background=t.ink;
+  var mk=document.querySelector('.mark');if(mk)mk.style.color=t.parch;
+  var b=document.getElementById('g7-theme');if(b){b.textContent=t.n;b.style.color=t.parch;}
+  try{localStorage.setItem('taina_th',ti);}catch(e){}
+}
+var nav=document.querySelector('.nav');
+if(nav){var tb=document.createElement('button');tb.id='g7-theme';tb.type='button';
+  tb.setAttribute('aria-label','Тема');tb.textContent=TH[ti].n;
+  tb.onclick=function(ev){ev.stopPropagation();applyTh(ti+1);};nav.appendChild(tb);}
+applyTh(ti);
+})();
+</script>
+
+  
+</body>
+</html>
