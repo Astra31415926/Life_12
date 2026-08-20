@@ -2039,8 +2039,8 @@ body.light-mode #mobabar{background:rgba(240,232,218,.96);}
 
   document.getElementById('mb-save').onclick=()=>{
     if(!hasImage)return;
-    if(needSplitHint()){openMobSplit();return;}
-    const n=defaultName();
+    openMenu();
+  };
     savePNG(n);
   };
   function openMobSplit(){
