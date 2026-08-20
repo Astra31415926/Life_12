@@ -2366,6 +2366,92 @@ if(galBtn){
 }
 })();
 </script>
+
+
+
+<!-- ═══ TAINA · РОЗКЛАСТИ НА ТРИ · тільки при натисканні «Зберегти» · вставити ПЕРЕД </body> (в кінці) ═══ -->
+<style>
+.sp-modal{position:fixed;inset:0;z-index:12000;display:none;}
+.sp-modal.on{display:block;}
+.sp-modal .bg{position:absolute;inset:0;background:rgba(0,0,0,.65);}
+.sp-modal .box{position:absolute;left:0;right:0;bottom:0;background:var(--panel);
+  border-top-left-radius:18px;border-top-right-radius:18px;
+  padding:18px 18px calc(20px + env(safe-area-inset-bottom));
+  display:flex;flex-direction:column;gap:12px;box-shadow:0 -12px 40px rgba(0,0,0,.6);}
+.sp-modal .t{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--acc-hot);}
+.sp-modal .d{font-size:14px;line-height:1.55;color:var(--parchment);}
+.sp-modal button{font-family:var(--mono);font-size:14px;font-weight:700;padding:15px;
+  border-radius:12px;cursor:pointer;border:1px solid color-mix(in srgb,var(--acc) 55%,transparent);
+  background:linear-gradient(160deg,color-mix(in srgb,var(--acc) 26%,transparent),color-mix(in srgb,var(--acc) 10%,transparent));
+  color:var(--acc-hot);}
+.sp-modal button.sec{background:transparent;color:var(--muted);border-style:dashed;border-color:var(--line);}
+</style>
+<script>
+(function(){
+var $I=function(id){return document.getElementById(id);};
+
+/* прибрати стару постійну кнопку розкладання (якщо є з попереднього патча) */
+var oldBtn=document.querySelector('.mob-splitbtn');
+if(oldBtn)oldBtn.style.display='none';
+
+function popup(title,text,buttons){
+  var w=document.createElement('div');w.className='sp-modal';
+  var bg=document.createElement('div');bg.className='bg';
+  var bx=document.createElement('div');bx.className='box';
+  var t=document.createElement('div');t.className='t';t.textContent=title;
+  var d=document.createElement('div');d.className='d';d.textContent=text;
+  bx.appendChild(t);bx.appendChild(d);
+  function kill(){if(w.parentElement)w.parentElement.removeChild(w);}
+  buttons.forEach(function(b){var el=document.createElement('button');
+    el.textContent=b.t;if(b.sec)el.className='sec';
+    el.onclick=function(ev){ev.stopPropagation();kill();if(b.f)b.f();};bx.appendChild(el);});
+  bg.onclick=kill;w.appendChild(bg);w.appendChild(bx);document.body.appendChild(w);
+}
+
+function doSave(){
+  var n=(typeof defaultName==='function'?defaultName():'taina');
+  if(typeof savePNG==='function')savePNG(n);
+}
+
+function trySave(){
+  var oneFilled=(typeof layers!=='undefined'&&layers===3&&
+    typeof monoMark!=='undefined'&&monoMark!==1&&
+    typeof D!=='undefined'&&D.ch.filter(function(t){return t&&t.trim();}).length===1);
+  if(!oneFilled){doSave();return;}
+  var only=D.ch.find(function(t){return t&&t.trim();})||'';
+  var origIdx=D.ch.findIndex(function(t){return t&&t.trim();});
+  var origCh=D.ch.slice();  /* знімок для скасування */
+  popup('Заповнено лише один канал',
+    'Розкласти цей текст на три кольори? Побачиш результат перед збереженням.',
+    [
+      {t:'⑂ Розкласти на три',f:function(){
+        D.ch=splitThree(only);monoMark=1;
+        refreshInputs();build();
+        setTimeout(function(){
+          popup('Ось як вийшло',
+            'Текст розкладено на три кольори. Зберегти цей варіант?',
+            [
+              {t:'⤓ Зберегти',f:doSave},
+              {t:'Скасувати',sec:true,f:function(){
+                D.ch=origCh.slice();monoMark=0;refreshInputs();build();
+              }}
+            ]);
+        },250);
+      }},
+      {t:'Лишити як є',sec:true,f:function(){monoMark=0;build();setTimeout(doSave,200);}}
+    ]);
+}
+
+/* перехопити кнопку «Зберегти» в нижній панелі (мобільна) */
+var tries=0;
+var iv=setInterval(function(){
+  var b=$I('mb-save');
+  if(b){b.onclick=function(ev){ev.stopPropagation();trySave();};clearInterval(iv);}
+  if(++tries>40)clearInterval(iv);
+},250);
+})();
+</script>
+
   
 </body>
 </html>
