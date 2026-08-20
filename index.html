@@ -419,6 +419,7 @@ body.light-mode #mobabar{background:rgba(240,232,218,.94);}
 
       
       <div class="menu hide" id="menu"></div>
+      <div class="menu hide" id="mob-split-menu" style="position:fixed;left:16px;right:16px;bottom:96px;z-index:9998;max-width:none"></div>
       <button class="mainbtn" id="mainbtn"></button>
     </div>
   </main>
@@ -1390,7 +1391,7 @@ function camLoop(){
   }
   camRAF=requestAnimationFrame(camLoop);
 }
-$('cam-btn').onclick=()=>{ camStream?stopCam():startCam(); };
+ $('cam-btn').onclick=()=>{ camStream?stopCam():startCam(); };
 
   async function showCamResult(found,shotURL){
   flash();
@@ -1568,7 +1569,7 @@ function runDecodeAttempts(img){
       OCTX.drawImage(im,0,0,512,512);blit();res()};
     im.onerror=()=>res();im.src=url;});}
 
-$('file').onchange=e=>{
+ $('file').onchange=e=>{
   const f=e.target.files[0];if(!f)return;
   const url=URL.createObjectURL(f),im=new Image();
   im.onload=async()=>{
@@ -1688,7 +1689,7 @@ function openMenu(){
     m.innerHTML=`<div class="menu-t">Джерело</div>
       <div class="row"><button class="b gold" id="src-gal">🖼 Обрати файл</button></div>`;
     $('src-gal').onclick=()=>{closeMenu();$('file').click()};}}
-$('mainbtn').onclick=e=>{e.stopPropagation();if(busy)return;menuOpen?closeMenu():openMenu()};
+ $('mainbtn').onclick=e=>{e.stopPropagation();if(busy)return;menuOpen?closeMenu():openMenu()};
 document.addEventListener('click',e=>{
   if(menuOpen&&!e.target.closest('.action'))closeMenu();
   if(palOpen&&!e.target.closest('.palette-pop')){palOpen=false;$('pal-panel').classList.add('hide')}});
@@ -1763,7 +1764,7 @@ function buildSwatches(){
         render();tone(700,.05,.05);};box.appendChild(s);});};
   mk($('sw-one'),ONE_COLORS,()=>colOne,c=>colOne=c);
   mk($('sw-zero'),ZERO_COLORS,()=>colZero,c=>colZero=c);}
-$('pal-btn').onclick=e=>{e.stopPropagation();palOpen=!palOpen;
+ $('pal-btn').onclick=e=>{e.stopPropagation();palOpen=!palOpen;
   $('pal-panel').classList.toggle('hide',!palOpen);$('pal-btn').classList.toggle('on',palOpen);};
 
 /* ═══════ СИМВОЛИ ═══════ */
@@ -1830,15 +1831,15 @@ function autoGrow(){
   for(let i=0;i<3;i++)grow($('t-'+i),120);
 }
 
-$('layers').onclick=e=>{const b=e.target.closest('button');if(!b)return;
+ $('layers').onclick=e=>{const b=e.target.closest('button');if(!b)return;
   scannedImg=null;setLayers(+b.dataset.l);build()};
-$('sym').onclick=e=>{const b=e.target.closest('button');if(!b)return;
+ $('sym').onclick=e=>{const b=e.target.closest('button');if(!b)return;
   scannedImg=null;mode=b.dataset.m;syncSeg('sym','m',mode);build()};
-$('shape').onclick=e=>{const b=e.target.closest('button');if(!b)return;
+ $('shape').onclick=e=>{const b=e.target.closest('button');if(!b)return;
   shape=b.dataset.s;syncSeg('shape','s',shape);scannedImg=null;render()};
-$('frame').onclick=e=>{const b=e.target.closest('button');if(!b)return;
+ $('frame').onclick=e=>{const b=e.target.closest('button');if(!b)return;
   frameW=+b.dataset.f;syncSeg('frame','f',String(frameW));scannedImg=null;render()};
-$('admin-toggle').onclick=()=>{adminOn=!adminOn;
+ $('admin-toggle').onclick=()=>{adminOn=!adminOn;
   $('admin-box').classList.toggle('hide',!adminOn);
   $('admin-toggle').classList.toggle('on',adminOn);
   $('admin-toggle').textContent=adminOn?'⚙ сховати адмін':'⚙ для адміна';};
@@ -1860,14 +1861,14 @@ function applyHist(){
   else{const parts=snap.split('|');monoMark=+parts[0];setLayers(3);
     D.ch=parts.slice(2).join('|').split('\u0001');}
   refreshInputs();build();syncHist();tone(560,.06,.05);}
-$('undo').onclick=()=>{if(hPos>0){hPos--;applyHist()}};
-$('redo').onclick=()=>{if(hPos<HIST.length-1){hPos++;applyHist()}};
-$('clr').onclick=()=>{clearTimeout(hTimer);
+ $('undo').onclick=()=>{if(hPos>0){hPos--;applyHist()}};
+ $('redo').onclick=()=>{if(hPos<HIST.length-1){hPos++;applyHist()}};
+ $('clr').onclick=()=>{clearTimeout(hTimer);
   D.single='';D.ch=['','',''];monoMark=0;refreshInputs();pushHist();build();
   activeInput().focus();tone(320,.09,.06,'triangle');};
 
 let prevLen=0;
-$('txt').oninput=e=>{const v=e.target.value;
+ $('txt').oninput=e=>{const v=e.target.value;
   if(v.length>prevLen)keyClick();prevLen=v.length;
   scannedImg=null;D.single=v;autoGrow();build();schedHist();};
 for(let i=0;i<3;i++)$('t-'+i).oninput=e=>{
@@ -1922,7 +1923,7 @@ function refreshThemeAccent(){
 }
 
 /* ── старт ── */
-$('themeBtn').onclick=()=>applyMode(modeIdx+1);   /* клік = наступний режим по колу */
+ $('themeBtn').onclick=()=>applyMode(modeIdx+1);   /* клік = наступний режим по колу */
 let startIdx=0;
 try{startIdx=parseInt(localStorage.getItem('taina_mode_idx'))||0;}catch(e){}
 applyMode(startIdx);
@@ -2037,10 +2038,35 @@ body.light-mode #mobabar{background:rgba(240,232,218,.96);}
   setInterval(syncMobSave,500);
 
   document.getElementById('mb-save').onclick=()=>{
-    if(typeof hasImage==='undefined'||!hasImage)return;
-    const n=(typeof defaultName==='function'?defaultName():'taina');
-    if(typeof savePNG==='function')savePNG(n);
+    if(!hasImage)return;
+    if(needSplitHint()){openMobSplit();return;}
+    const n=defaultName();
+    savePNG(n);
   };
+  function openMobSplit(){
+    const m=document.getElementById('mob-split-menu');
+    m.classList.remove('hide');
+    const only=D.ch.find(t=>t&&t.trim())||'';
+    m.innerHTML=`<div class="menu-t">Заповнено лише один канал</div>
+      <div class="hint">Розкласти цей текст на три кольори? Побачиш результат перед збереженням.</div>
+      <div class="row"><button class="b gold" id="mob-do-split">⑂ Розкласти на три</button></div>
+      <div class="row"><button class="b" id="mob-do-asis">Лишити як є</button></div>`;
+    document.getElementById('mob-do-split').onclick=()=>{
+      const parts=splitThree(only);D.ch=parts;monoMark=1;
+      refreshInputs();build();
+      m.innerHTML=`<div class="menu-t">Ось як вийшло</div>
+        <div class="hint">Зберегти цей варіант?</div>
+        <div class="row"><button class="b gold" id="mob-confirm-save">⤓ Зберегти</button></div>
+        <div class="row"><button class="b" id="mob-cancel-split">Скасувати</button></div>`;
+      document.getElementById('mob-confirm-save').onclick=()=>{
+        m.classList.add('hide');savePNG(defaultName());};
+      document.getElementById('mob-cancel-split').onclick=()=>{
+        D.ch=['','',''].map((v,i)=>i===D.ch.indexOf(only)?only:v);
+        monoMark=0;refreshInputs();build();m.classList.add('hide');};
+    };
+    document.getElementById('mob-do-asis').onclick=()=>{
+      m.classList.add('hide');monoMark=0;build();savePNG(defaultName());};
+  }
   document.getElementById('mb-scan').onclick=()=>openSheet();
 
   /* ── action sheet: Камера / Завантажити ── */
@@ -2364,91 +2390,6 @@ if(galBtn){
     if(inGal)loadGallery();
   });
 }
-})();
-</script>
-
-
-
-<!-- ═══ TAINA · РОЗКЛАСТИ НА ТРИ · тільки при натисканні «Зберегти» · вставити ПЕРЕД </body> (в кінці) ═══ -->
-<style>
-.sp-modal{position:fixed;inset:0;z-index:12000;display:none;}
-.sp-modal.on{display:block;}
-.sp-modal .bg{position:absolute;inset:0;background:rgba(0,0,0,.65);}
-.sp-modal .box{position:absolute;left:0;right:0;bottom:0;background:var(--panel);
-  border-top-left-radius:18px;border-top-right-radius:18px;
-  padding:18px 18px calc(20px + env(safe-area-inset-bottom));
-  display:flex;flex-direction:column;gap:12px;box-shadow:0 -12px 40px rgba(0,0,0,.6);}
-.sp-modal .t{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--acc-hot);}
-.sp-modal .d{font-size:14px;line-height:1.55;color:var(--parchment);}
-.sp-modal button{font-family:var(--mono);font-size:14px;font-weight:700;padding:15px;
-  border-radius:12px;cursor:pointer;border:1px solid color-mix(in srgb,var(--acc) 55%,transparent);
-  background:linear-gradient(160deg,color-mix(in srgb,var(--acc) 26%,transparent),color-mix(in srgb,var(--acc) 10%,transparent));
-  color:var(--acc-hot);}
-.sp-modal button.sec{background:transparent;color:var(--muted);border-style:dashed;border-color:var(--line);}
-</style>
-<script>
-(function(){
-var $I=function(id){return document.getElementById(id);};
-
-/* прибрати стару постійну кнопку розкладання (якщо є з попереднього патча) */
-var oldBtn=document.querySelector('.mob-splitbtn');
-if(oldBtn)oldBtn.style.display='none';
-
-function popup(title,text,buttons){
-  var w=document.createElement('div');w.className='sp-modal';
-  var bg=document.createElement('div');bg.className='bg';
-  var bx=document.createElement('div');bx.className='box';
-  var t=document.createElement('div');t.className='t';t.textContent=title;
-  var d=document.createElement('div');d.className='d';d.textContent=text;
-  bx.appendChild(t);bx.appendChild(d);
-  function kill(){if(w.parentElement)w.parentElement.removeChild(w);}
-  buttons.forEach(function(b){var el=document.createElement('button');
-    el.textContent=b.t;if(b.sec)el.className='sec';
-    el.onclick=function(ev){ev.stopPropagation();kill();if(b.f)b.f();};bx.appendChild(el);});
-  bg.onclick=kill;w.appendChild(bg);w.appendChild(bx);document.body.appendChild(w);
-}
-
-function doSave(){
-  var n=(typeof defaultName==='function'?defaultName():'taina');
-  if(typeof savePNG==='function')savePNG(n);
-}
-
-function trySave(){
-  var oneFilled=(typeof layers!=='undefined'&&layers===3&&
-    typeof monoMark!=='undefined'&&monoMark!==1&&
-    typeof D!=='undefined'&&D.ch.filter(function(t){return t&&t.trim();}).length===1);
-  if(!oneFilled){doSave();return;}
-  var only=D.ch.find(function(t){return t&&t.trim();})||'';
-  var origIdx=D.ch.findIndex(function(t){return t&&t.trim();});
-  var origCh=D.ch.slice();  /* знімок для скасування */
-  popup('Заповнено лише один канал',
-    'Розкласти цей текст на три кольори? Побачиш результат перед збереженням.',
-    [
-      {t:'⑂ Розкласти на три',f:function(){
-        D.ch=splitThree(only);monoMark=1;
-        refreshInputs();build();
-        setTimeout(function(){
-          popup('Ось як вийшло',
-            'Текст розкладено на три кольори. Зберегти цей варіант?',
-            [
-              {t:'⤓ Зберегти',f:doSave},
-              {t:'Скасувати',sec:true,f:function(){
-                D.ch=origCh.slice();monoMark=0;refreshInputs();build();
-              }}
-            ]);
-        },250);
-      }},
-      {t:'Лишити як є',sec:true,f:function(){monoMark=0;build();setTimeout(doSave,200);}}
-    ]);
-}
-
-/* перехопити кнопку «Зберегти» в нижній панелі (мобільна) */
-var tries=0;
-var iv=setInterval(function(){
-  var b=$I('mb-save');
-  if(b){b.onclick=function(ev){ev.stopPropagation();trySave();};clearInterval(iv);}
-  if(++tries>40)clearInterval(iv);
-},250);
 })();
 </script>
 
