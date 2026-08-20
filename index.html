@@ -2205,6 +2205,48 @@ body.light-mode #mobabar button:disabled{color:#8a7a5c;}
   }
 })();
 </script>
+
+<!-- ═══ ФІКС: тема в лабораторії + контраст світлої теми ═══ -->
+<style>
+@media(max-width:768px){
+  #m9-theme{display:inline-flex!important;align-items:center;justify-content:center;
+    margin-left:auto!important;width:38px;height:38px;border-radius:10px;font-size:16px;
+    border:1px solid var(--line);background:transparent;cursor:pointer;flex:0 0 auto;}
+}
+#m9-theme{display:none;}
+/* світла тема: сильніший контраст для тексту й кнопок */
+body.light-mode .mark{color:#1a1208!important;}
+body.light-mode .roomtab{color:#3a2e1c;}
+body.light-mode .roomtab.on{color:#1a1208;}
+body.light-mode #m9-theme{color:#1a1208;border-color:rgba(58,46,28,.4);}
+body.light-mode .seg button{color:#3a2e1c;}
+body.light-mode .seg button.on{color:#1a1208;}
+body.light-mode #mobabar button{color:#1a1208;}
+body.light-mode #mobabar button:disabled{color:#8a7a5c;}
+</style>
+<script>
+(function(){
+  var mq=window.matchMedia('(max-width:768px)');
+  if(!mq.matches)return;
+  /* кнопка теми у ЛАБОРАТОРІЇ (шапка .nav вже може мати theme-кнопку з галереї — тут своя, для index.html) */
+  var nav=document.querySelector('header .nav');
+  if(nav && !document.getElementById('m9-theme')){
+    var tb=document.createElement('button');
+    tb.id='m9-theme';tb.type='button';tb.setAttribute('aria-label','Тема');
+    tb.textContent=document.body.classList.contains('light-mode')?'☀️':'🌙';
+    tb.onclick=function(){
+      if(typeof applyMode==='function' && typeof modeIdx!=='undefined'){
+        applyMode(modeIdx+1);
+      }else{
+        document.body.classList.toggle('light-mode');
+      }
+      tb.textContent=document.body.classList.contains('light-mode')?'☀️':'🌙';
+    };
+    nav.appendChild(tb);
+  }
+})();
+</script>
+
   
 </body>
 </html>
