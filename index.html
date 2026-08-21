@@ -2272,6 +2272,45 @@ if(galBtn){
 }
 })();
 </script>
+
+
+<!-- ═══ TAINA · МОБІЛЬНИЙ КРОК 1 · RGB одним полем ═══ -->
+<style>
+@media(max-width:768px){
+  body.rgb-solo #row-three{display:none!important;}
+  body.rgb-solo #row-one{display:block!important;position:relative;}
+  body.rgb-solo #row-one::before{content:'RGB';position:absolute;left:20px;top:50%;
+    transform:translateY(-50%);font-family:var(--mono);font-size:16px;letter-spacing:.06em;
+    color:var(--acc-dim);pointer-events:none;z-index:2;}
+  body.rgb-solo #txt{text-align:left!important;padding-left:64px!important;}
+}
+</style>
+<script>
+(function(){
+  const mq=window.matchMedia('(max-width:768px)');
+  const txt=document.getElementById('txt');
+  const rowOne=document.getElementById('row-one');
+  const rowThree=document.getElementById('row-three');
+  const layersBox=document.getElementById('layers');
+  if(!txt||!layersBox)return;
+  function applySolo(){
+    rowOne.classList.remove('hide');rowThree.classList.add('hide');
+    document.body.classList.add('rgb-solo');
+    D.ch=splitThree(txt.value);monoMark=1;build();
+  }
+  layersBox.addEventListener('click',e=>{
+    if(!e.target.closest('button'))return;
+    setTimeout(()=>{
+      if(mq.matches&&layers===3)applySolo();
+      else document.body.classList.remove('rgb-solo');
+    },0);
+  });
+  txt.addEventListener('input',()=>{
+    if(mq.matches&&layers===3){D.ch=splitThree(txt.value);monoMark=1;build();}
+  });
+})();
+</script>
+
   
 </body>
 </html>
