@@ -2311,6 +2311,27 @@ if(galBtn){
 })();
 </script>
 
+
+  <!-- ═══ TAINA · МОБІЛЬНИЙ КРОК 2 · палітра під полем ═══ -->
+<style>
+@media(max-width:768px){
+  #pal-panel .pal-row:last-child{display:none!important;}  /* прибрати «нуль і фон» */
+  #pal-panel .pal-row .lbl{display:none!important;}         /* без підписів */
+  #pal-panel{margin:8px 0 0!important;}
+  body.rgb-solo #pal-panel{display:none!important;}         /* у RGB палітри нема */
+  .side.right{display:none!important;}                      /* стара права секція не потрібна */
+}
+</style>
+<script>
+(function(){
+  const mq=window.matchMedia('(max-width:768px)');
+  if(!mq.matches)return;
+  const stage=document.getElementById('stage');
+  const pal=document.getElementById('pal-panel');
+  if(stage&&pal)stage.parentNode.insertBefore(pal,stage.nextSibling);
+})();
+</script>
+
   
 </body>
 </html>
