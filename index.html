@@ -2331,6 +2331,20 @@ if(galBtn){
 })();
 </script>
 
+
+<!-- ═══ TAINA · МОБІЛЬНИЙ КРОК 3 · жорстка фіксація + палітра в ряд ═══ -->
+<style>
+@media(max-width:768px){
+  #row-three{display:none!important;}          /* 6 · три поля не блимають */
+  #row-one{display:block!important;}
+  body.rgb-solo #txt{text-align:center!important;padding-left:0!important;} /* 5 */
+  #pal-panel .swatches{flex-wrap:nowrap!important;overflow-x:auto!important;} /* 1 */
+  body.rgb-solo #pal-panel{display:flex!important;visibility:hidden!important;} /* 2,3 */
+  .stage{max-width:min(66vw,290px)!important;}          /* 3,4 */
+  body.kbd .stage{max-width:min(66vw,290px)!important;}
+}
+</style>
+  
   
 </body>
 </html>
