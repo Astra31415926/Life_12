@@ -1340,6 +1340,7 @@ let camStream=null, camRAF=null, camBusy=false, camLastText=null, camTimer=0;
 function camEls(){return {v:$('cam-video'),vf:$('vf'),btn:$('cam-btn')};}
 async function startCam(){
   const {v,vf,btn}=camEls();
+  if(camStream){stopCam();}
   try{
     camStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment',width:{ideal:1920},height:{ideal:1920}}});
     v.srcObject=camStream; v.setAttribute('playsinline','');
