@@ -1349,8 +1349,11 @@ async function startCam(){
     $('stage').classList.add('scanning');
     btn.textContent='⏹ Зупинити'; $('rt').innerHTML='<span class="w">наведи на код…</span>';
     camLastText=null; camTimer=0; camBusy=false;
-    startScanSound();
+   startScanSound();
     camLoop();
+    clearTimeout(window._camTO);clearInterval(window._camTick);
+    window._camTick=setInterval(function(){tone(1200,.03,.03,'sine');},900);
+    window._camTO=setTimeout(function(){if(camStream){stopCam();$('rt').innerHTML='<span class="w">не знайдено — спробуй ще</span>';}},10000);
   }catch(e){ alert('Камера недоступна: '+e); }
 }
 function stopCam(){
