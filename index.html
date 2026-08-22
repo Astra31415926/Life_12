@@ -1376,7 +1376,7 @@ function camLoop(){
       try{ found=runDecodeAttempts(c); }catch(e){}
       if(found.length){
         const txt=found[0].res.filter(x=>x).join('\u0001');
-        if(txt && txt===camLastText){
+      if(txt){
           const shot=document.createElement('canvas');shot.width=shot.height=512;
           shot.getContext('2d').drawImage(c,0,0,512,512);
           const url=shot.toDataURL('image/png');
