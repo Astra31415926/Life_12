@@ -521,7 +521,7 @@ function okChime(){tone(587,.09,.08);setTimeout(()=>tone(784,.1,.08),85);
 function sadSound(){tone(392,.2,.08,'triangle');setTimeout(()=>tone(311,.24,.08,'triangle'),170);
   setTimeout(()=>tone(233,.5,.09,'triangle'),360)}
 let scanNodes=null;
-function startScanSound(){const c=ac();if(!c)return;
+function startScanSound(){scanNodes=null;try{tone(660,.08,.05);setTimeout(function(){tone(880,.08,.05);},140);}catch(e){}return;const c=ac();if(!c)return;
   try{
     const o=c.createOscillator(),g=c.createGain(),f=c.createBiquadFilter();
     o.type='triangle';f.type='bandpass';f.frequency.value=800;f.Q.value=3;
