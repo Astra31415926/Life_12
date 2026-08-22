@@ -2345,6 +2345,30 @@ if(galBtn){
 }
 </style>
   
+
+<!-- ═══ TAINA · МОБІЛЬНИЙ КРОК 4 · хрестик + палітра 8 кольорів ═══ -->
+<style>
+@media(max-width:768px){
+  #pal-panel .swatches .sw:nth-child(n+9){display:none!important;}   /* лишити 8 */
+  #row-one{position:relative;}
+  #mob-clear{position:absolute;top:9px;right:10px;z-index:3;width:30px;height:30px;
+    border-radius:8px;border:1px solid var(--line);background:transparent;color:var(--muted);
+    font-size:14px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+  #mob-clear:active{color:var(--acc-hot);border-color:var(--acc-dim);}
+}
+@media(min-width:769px){#mob-clear{display:none;}}
+</style>
+<script>
+(function(){
+  const row=document.getElementById('row-one');
+  if(!row||document.getElementById('mob-clear'))return;
+  const x=document.createElement('button');
+  x.type='button';x.id='mob-clear';x.setAttribute('aria-label','Очистити');x.textContent='✕';
+  x.onclick=function(){var c=document.getElementById('clr');if(c)c.click();};
+  row.appendChild(x);
+})();
+</script>
+
   
 </body>
 </html>
