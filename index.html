@@ -1404,6 +1404,9 @@ function camLoop(){
     okChime();
     for(let i=0;i<3;i++)$('t-'+i).value='';
     for(let i=0;i<3;i++)if(best.res[i]){await typeOut($('t-'+i),best.res[i],22);grow($('t-'+i),120);}
+        document.body.classList.add('rgb-solo');
+    $('txt').value=[best.res[0],best.res[1],best.res[2]].filter(Boolean).join(' ');
+    D.single=$('txt').value;
     showResult('✓ прочитано · камера',null);
   }else{
     setLayers(1);monoMark=0;
