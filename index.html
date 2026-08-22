@@ -1625,14 +1625,13 @@ function runDecodeAttempts(img){
       prevLen=txt.length;pushHist();
       showResult('✓ прочитано'+(best.kind==='mono'?' · монолітний текст':''),txt);}
 
-    /* адмін-звіт */
+   /* адмін-звіт */
     $('report').innerHTML='<div style="margin-bottom:4px;color:var(--acc-dim)">Варіантів: '+found.length+'</div>'+
       found.slice(0,6).map(f=>{
         const txt=f.res.filter(x=>x).join(' | ')||'—';
         const tag=f.kind==='three'?'RGB×3':(f.kind==='mono'?'RGB моно':modeName(f.mode));
         return `<span>${tag} · ${f.n} → <b>${txt.slice(0,22)}</b></span>`;}).join('');
-    /* НЕ викликаємо build() — лишаємо скановану картинку на полотні */
-    hasImage=true;syncMain();busy=false;e.target.value='';};
+    scannedImg=null;build();busy=false;e.target.value='';};
   im.onerror=()=>{URL.revokeObjectURL(url);$('rt').innerHTML='<span class="r">не вдалося відкрити файл</span>'};
   im.src=url;};
 function modeName(m){return {oct:'×8',quad:'×4',half:'×2',row:'×1'}[m]||m}
