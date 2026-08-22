@@ -1358,6 +1358,7 @@ async function startCam(){
 }
 function stopCam(){
   const {v,vf,btn}=camEls();
+  clearTimeout(window._camTO);clearInterval(window._camTick);
   if(camRAF)cancelAnimationFrame(camRAF); camRAF=null;
   if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null;}
   if(v.srcObject)v.srcObject=null;
